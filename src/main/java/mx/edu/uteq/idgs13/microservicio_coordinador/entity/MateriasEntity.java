@@ -18,5 +18,5 @@ public class MateriasEntity {
     private String descripcion;
 
     @Column(nullable = false)
-    private Boolean status;
+    private Boolean activo;
 }

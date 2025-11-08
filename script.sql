@@ -1,5 +1,5 @@
 -- ================== INSERTAR MATERIAS ====================
-INSERT INTO materias (nombre, descripcion, status) VALUES 
+INSERT INTO materias (nombre, descripcion, activo) VALUES 
 ('Programación Orientada a Objetos', 'Curso fundamental de programación que cubre los conceptos de OOP', true),
 ('Bases de Datos', 'Diseño y administración de bases de datos relacionales', true),
 ('Desarrollo Web', 'Fundamentos de desarrollo web front-end y back-end', true),
@@ -11,28 +11,31 @@ INSERT INTO materias (nombre, descripcion, status) VALUES
 ('Inteligencia Artificial', 'Introducción a la IA y machine learning', true),
 ('Seguridad Informática', 'Principios de seguridad y criptografía', true);
 
--- ================== ASIGNAR MATERIAS A PROFESORES ====================
--- Profesor Juan Manuel Pérez (ID: 5)
-INSERT INTO profesor_materias (profesor_id, materia_id, activo) VALUES 
+
+-- ================== ASIGNAR MATERIAS A PROFESORES (CORREGIDO AL 100%) ====================
+-- ¡¡IMPORTANTE!! La columna se llama: materias_id (NO materia_id)
+
+-- Ing. Juan Manuel Pérez López (ID: 5)
+INSERT INTO profesor_materias (profesor_id, materias_id, activo) VALUES 
 (5, 1, true),  -- Programación Orientada a Objetos
 (5, 5, true);  -- Estructura de Datos
 
--- Profesora Laura García (ID: 6)
-INSERT INTO profesor_materias (profesor_id, materia_id, activo) VALUES 
+-- Mtra. Laura Sofía García Hernández (ID: 6)
+INSERT INTO profesor_materias (profesor_id, materias_id, activo) VALUES 
 (6, 2, true),  -- Bases de Datos
 (6, 3, true);  -- Desarrollo Web
 
--- Profesor Roberto Sánchez (ID: 7)
-INSERT INTO profesor_materias (profesor_id, materia_id, activo) VALUES 
+-- Dr. Roberto Carlos Sánchez (ID: 7)
+INSERT INTO profesor_materias (profesor_id, materias_id, activo) VALUES 
 (7, 4, true),  -- Matemáticas Discretas
 (7, 9, true);  -- Inteligencia Artificial
 
--- Profesor Francisco Torres (ID: 9)
-INSERT INTO profesor_materias (profesor_id, materia_id, activo) VALUES 
+-- Mtro. Francisco Javier Torres (ID: 9)
+INSERT INTO profesor_materias (profesor_id, materias_id, activo) VALUES 
 (9, 6, true),  -- Ingeniería de Software
 (9, 10, true); -- Seguridad Informática
 
--- Profesora Gabriela Morales (ID: 10)
-INSERT INTO profesor_materias (profesor_id, materia_id, activo) VALUES 
+-- Dra. Gabriela Ivonne Morales (ID: 10)
+INSERT INTO profesor_materias (profesor_id, materias_id, activo) VALUES 
 (10, 7, true), -- Redes de Computadoras
 (10, 8, true); -- Sistemas Operativos

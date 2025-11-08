@@ -1,6 +1,7 @@
 package mx.edu.uteq.idgs13.microservicio_coordinador.controller;
 
 import mx.edu.uteq.idgs13.microservicio_coordinador.dto.MateriasDto;
+import mx.edu.uteq.idgs13.microservicio_coordinador.dto.ProfesorConMateriasDto;
 import mx.edu.uteq.idgs13.microservicio_coordinador.service.MateriasService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,5 +27,11 @@ public class MateriasController {
     public ResponseEntity<MateriasDto> getMateriaById(@PathVariable Long id) {
         MateriasDto materia = materiasService.getMateriaById(id);
         return materia != null ? ResponseEntity.ok(materia) : ResponseEntity.notFound().build();
+    }
+
+    // ENDPOINT: Obtener profesores con sus materias
+    @GetMapping("/profesores-con-materias")
+    public ResponseEntity<List<ProfesorConMateriasDto>> getProfesoresConMaterias() {
+        return ResponseEntity.ok(materiasService.getProfesoresConMaterias());
     }
 }

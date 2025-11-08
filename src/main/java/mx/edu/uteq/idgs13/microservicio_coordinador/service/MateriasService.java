@@ -1,8 +1,13 @@
 package mx.edu.uteq.idgs13.microservicio_coordinador.service;
 
+import mx.edu.uteq.idgs13.microservicio_coordinador.client.ProfesorEntityClient;
 import mx.edu.uteq.idgs13.microservicio_coordinador.dto.MateriasDto;
+import mx.edu.uteq.idgs13.microservicio_coordinador.dto.ProfesorConMateriasDto;
+import mx.edu.uteq.idgs13.microservicio_coordinador.dto.ProfesoresDto;
 import mx.edu.uteq.idgs13.microservicio_coordinador.entity.MateriasEntity;
+import mx.edu.uteq.idgs13.microservicio_coordinador.entity.ProfesorMateriasEntity;
 import mx.edu.uteq.idgs13.microservicio_coordinador.repository.MateriasRepository;
+import mx.edu.uteq.idgs13.microservicio_coordinador.repository.ProfesorMateriasRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +21,12 @@ public class MateriasService {
 
     @Autowired
     private MateriasRepository materiasRepository;
+
+    @Autowired
+    private ProfesorEntityClient profesorClient;
+
+    @Autowired
+    private ProfesorMateriasRepository profesorMateriasRepository;
 
     public List<MateriasDto> getAllMaterias() {
         List<MateriasEntity> materias = materiasRepository.findAll();
@@ -33,5 +44,33 @@ public class MateriasService {
         MateriasDto materiaDto = new MateriasDto();
         BeanUtils.copyProperties(materia, materiaDto);
         return materiaDto;
+    }
+
+    // NUEVO MÉTODO: Obtener profesores con sus materias
+    public List<ProfesorConMateriasDto> getProfesoresConMaterias() {
+        // 1. Traer TODOS los profesores del microservicio administrador
+        List<ProfesoresDto> profesores = profesorClient.getAllProfesores();
+
+        // 2. Traer TODAS las asignaciones locales
+        List<ProfesorMateriasEntity> asignaciones = profesorMateriasRepository.findAll();
+
+        // 3. Mapear profesores con sus materias
+        return profesores.stream()
+                .map(profesor -> {
+                    ProfesorConMateriasDto dto = new ProfesorConMateriasDto();
+                    dto.setProfesorId(profesor.getId());
+                    dto.setNombre(profesor.getNombre());
+                    dto.setEmail(profesor.getEmail());
+
+                    List<MateriasDto> materiasDelProf = asignaciones.stream()
+                            .filter(a -> a.getProfesorId().equals(profesor.getId()))
+                            .map(a -> convertToDto(a.getMateria()))
+                            .toList();
+
+                    dto.setMaterias(materiasDelProf);
+                    return dto;
+                })
+                .filter(dto -> !dto.getMaterias().isEmpty()) // opcional: solo profesores con materias
+                .toList();
     }
 }

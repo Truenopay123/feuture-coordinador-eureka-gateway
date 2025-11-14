@@ -40,13 +40,31 @@ public class MateriasService {
         return materia.map(this::convertToDto).orElse(null);
     }
 
+    // NUEVO MÉTODO: Crear materia
+    public MateriasDto createMateria(MateriasDto materiaDto) {
+        MateriasEntity materia = new MateriasEntity();
+        
+        // Copiar propiedades del DTO a la entidad
+        materia.setNombre(materiaDto.getNombre());
+        materia.setDescripcion(materiaDto.getDescripcion());
+        
+        // Si no se especifica "activo", por defecto será true
+        materia.setActivo(materiaDto.getActivo() != null ? materiaDto.getActivo() : true);
+        
+        // Guardar en la base de datos
+        MateriasEntity materiaGuardada = materiasRepository.save(materia);
+        
+        // Convertir y retornar el DTO
+        return convertToDto(materiaGuardada);
+    }
+
     private MateriasDto convertToDto(MateriasEntity materia) {
         MateriasDto materiaDto = new MateriasDto();
         BeanUtils.copyProperties(materia, materiaDto);
         return materiaDto;
     }
 
-    // NUEVO MÉTODO: Obtener profesores con sus materias
+    // MÉTODO: Obtener profesores con sus materias
     public List<ProfesorConMateriasDto> getProfesoresConMaterias() {
         // 1. Traer TODOS los profesores del microservicio administrador
         List<ProfesoresDto> profesores = profesorClient.getAllProfesores();
@@ -70,7 +88,7 @@ public class MateriasService {
                     dto.setMaterias(materiasDelProf);
                     return dto;
                 })
-                .filter(dto -> !dto.getMaterias().isEmpty()) // opcional: solo profesores con materias
+                .filter(dto -> !dto.getMaterias().isEmpty())
                 .toList();
     }
 }

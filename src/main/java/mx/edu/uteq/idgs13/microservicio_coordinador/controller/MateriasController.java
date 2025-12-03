@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/materias")
-@CrossOrigin(origins = "*")
 public class MateriasController {
 
     @Autowired
@@ -33,5 +32,43 @@ public class MateriasController {
     @GetMapping("/profesores-con-materias")
     public ResponseEntity<List<ProfesorConMateriasDto>> getProfesoresConMaterias() {
         return ResponseEntity.ok(materiasService.getProfesoresConMaterias());
+    }
+
+    // Crear materia
+    @PostMapping
+    public ResponseEntity<MateriasDto> crearMateria(@RequestBody MateriasDto materiaDto) {
+        MateriasDto creada = materiasService.crearMateria(materiaDto);
+        return ResponseEntity.status(201).body(creada);
+    }
+
+    // Editar materia
+    @PutMapping("/{id}")
+    public ResponseEntity<MateriasDto> editarMateria(@PathVariable Long id, @RequestBody MateriasDto materiaDto) {
+        MateriasDto existente = materiasService.getMateriaById(id);
+        if (existente == null) return ResponseEntity.notFound().build();
+        materiaDto.setId(id);
+        MateriasDto editada = materiasService.editarMateria(materiaDto);
+        return ResponseEntity.ok(editada);
+    }
+
+    // Eliminar materia
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarMateria(@PathVariable Long id) {
+        boolean ok = materiasService.eliminarMateria(id);
+        return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    // Habilitar/Deshabilitar materia
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<MateriasDto> actualizarEstado(@PathVariable Long id, @RequestParam boolean activo) {
+        MateriasDto actualizada = materiasService.actualizarEstado(id, activo);
+        return actualizada != null ? ResponseEntity.ok(actualizada) : ResponseEntity.notFound().build();
+    }
+
+    // Asignar materia a un profesor
+    @PostMapping("/{id}/asignar")
+    public ResponseEntity<MateriasDto> asignarProfesor(@PathVariable Long id, @RequestParam Long profesorId) {
+        MateriasDto resultado = materiasService.asignarProfesor(id, profesorId);
+        return resultado != null ? ResponseEntity.ok(resultado) : ResponseEntity.badRequest().build();
     }
 }
